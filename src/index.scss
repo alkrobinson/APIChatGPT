@@ -1,3 +1,116 @@
+html {
+  height: 100%;
+}
 body {
-  background-color: powderblue;
+  font-size: 16px;
+  background-color: #212121;
+  color: #ececec;
+  margin: 0;
+  height: 100%;
+
+  .main-area {
+    height: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .top-area {
+    font-size: 24px;
+    font-weight: 500;
+    color: #ececec;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .logo {
+    color: #0d0d0d;
+    background-color: #ffffff;
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: 0.75rem;
+    border-radius: 9999px;
+  }
+  .bottom-area {
+    width: calc(100% - 0.5rem);
+    text-align: center;
+  }
+
+  form {
+    display: flex;
+    flex-direction: row;
+    gap: 0.75rem;
+    max-width: 48rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .form-items {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0%;
+    height: 100%;
+    position: relative;
+    padding-bottom: 2rem;
+  }
+  .api {
+    color: #ffffff;
+    border: 1px solid;
+    background-color: transparent;
+    border-radius: 0.75rem;
+    border-color: #ffffff26;
+    margin-bottom: 1rem;
+  }
+  .prompt-container {
+    color: #ffffff;
+    border: 1px solid;
+    border-radius: 1rem;
+    overflow: hidden;
+    display: flex;
+    flex-grow: 1;
+    width: 100%;
+    position: relative;
+    border-color: #ffffff26;
+    background-color: #212121;
+  }
+
+  .submit {
+    background-color: rgb(255 255 255);
+    right: 0.75rem;
+    bottom: 0.75rem;
+    padding: 0.125rem;
+    border: 1px solid rgb(255 255 255);
+    border-radius: 0.5rem;
+    position: absolute;
+  }
+  .submit-svg {
+    color: rgb(0 0 0);
+    display: block;
+  }
+
+  .prompt {
+    color: #ffffff;
+    height: 2rem;
+    overflow-y: hidden;
+    background-color: transparent;
+    width: 100%;
+    border-width: 0;
+    margin: 0;
+    border-color: #9b9b9b;
+    border-radius: 0;
+    font-size: 1rem;
+    padding-right: 3rem;
+    padding-left: 55px;
+    padding-bottom: 0.875rem;
+    padding-top: 0.875rem;
+  }
 }
