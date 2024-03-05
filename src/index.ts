@@ -1,27 +1,40 @@
 import "./index.scss";
 import OpenAI from "openai";
 
+let openai = new OpenAI({
+  apiKey: "",
+  dangerouslyAllowBrowser: true,
+});
+
+(document.getElementById("apiKey") as HTMLInputElement).addEventListener(
+  "input",
+  async (event: InputEvent) => {
+    openai.apiKey = (event.target as HTMLInputElement).value;
+    try {
+      const models = await openai.models.list();
+      console.log("API Key is valid", models.data);
+      
+    } catch (error) {
+      console.error("API Key is invalid", error);
+      
+    }
+  }
+);
+
 document
   .getElementById("apiForm")
   .addEventListener("submit", async (event: SubmitEvent) => {
     event.preventDefault();
-
-    const key = ((event.target as HTMLFormElement)[0] as HTMLInputElement)
-      .value;
-    const prompt = ((event.target as HTMLFormElement)[1] as HTMLTextAreaElement)
+    const prompt = (document.getElementById("prompt") as HTMLTextAreaElement)
       .value;
 
     document.getElementById("response").innerText = "Fetching Response ...";
-    startCompletions(key, prompt);
+    startCompletions(prompt);
   });
 
-async function startCompletions(key: string, prompt: string) {
-  const openai = new OpenAI({
-    apiKey: key,
-    dangerouslyAllowBrowser: true,
-  });
+async function startCompletions(prompt: string) {
   const response = await openai.chat.completions.create({
-    model: "gpt-3.5-turbo",
+    model: "gpt-4-turbo-preview",
     messages: [
       {
         role: "system",

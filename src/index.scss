@@ -53,6 +53,16 @@ body {
         display: flex;
         flex-direction: column;
         gap: 2rem;
+
+        .models{
+          width: 100%;
+          background: transparent;
+          color: #ffffff;
+
+          option {
+            background-color: transparent;
+          }
+        }
       }
 
       .api-input {
