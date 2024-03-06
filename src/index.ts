@@ -12,11 +12,18 @@ let openai = new OpenAI({
     openai.apiKey = (event.target as HTMLInputElement).value;
     try {
       const models = await openai.models.list();
-      console.log("API Key is valid", models.data);
-      
+      models.data.forEach((model) => {
+        const option = document.createElement("option");
+        if (model.id.includes("gpt")) {
+          option.value = model.id;
+          option.innerText = model.id;
+          document.getElementById("models").appendChild(option);
+        }
+      });
+      document.getElementById("models").hidden = false;
+      document.getElementById("modelLabel").hidden = false;
     } catch (error) {
       console.error("API Key is invalid", error);
-      
     }
   }
 );
@@ -27,14 +34,13 @@ document
     event.preventDefault();
     const prompt = (document.getElementById("prompt") as HTMLTextAreaElement)
       .value;
-
     document.getElementById("response").innerText = "Fetching Response ...";
     startCompletions(prompt);
   });
 
 async function startCompletions(prompt: string) {
   const response = await openai.chat.completions.create({
-    model: "gpt-4-turbo-preview",
+    model: (document.getElementById("models") as HTMLSelectElement).value,
     messages: [
       {
         role: "system",
@@ -51,7 +57,6 @@ async function startCompletions(prompt: string) {
     frequency_penalty: 0,
     presence_penalty: 0,
   });
-  console.log(response);
 
   document.getElementById("response").innerText =
     response.choices[0].message.content;
