@@ -1,17 +1,21 @@
 import { MessageContentText } from "openai/resources/beta/threads/messages/messages";
 import "./index.scss";
 import OpenAI from "openai";
-
-// Create a new global instances so multiple functions can reference.
+/**
+ * Global variables so  that multiple functions can access them.
+ */
 let assistantChosen = "";
 let openai = new OpenAI({
   apiKey: "",
   dangerouslyAllowBrowser: true,
 });
 let thread: OpenAI.Beta.Threads.Thread = null;
-
+/**
+ * This function is called when the user choses an assistant.
+ * It will send the prompt to the assistant and display the response when ready.
+ */
 async function useAssistant(prompt: string) {
-  const message = await openai.beta.threads.messages.create(thread.id, {
+  await openai.beta.threads.messages.create(thread.id, {
     role: "user",
     content: prompt,
   });
@@ -20,14 +24,35 @@ async function useAssistant(prompt: string) {
   });
 
   let runStatus = await openai.beta.threads.runs.retrieve(thread.id, run.id);
-  while (runStatus.status === "in_progress") {
-    runStatus = await openai.beta.threads.runs.retrieve(thread.id, run.id);
+  let i = 0;
+  let startTime = new Date();
+  function myLoop() {
+    i++;
+    setTimeout(async () => {
+      if (runStatus.status === "in_progress" && i < 15) {
+        runStatus = await openai.beta.threads.runs.retrieve(thread.id, run.id);
+        myLoop();
+        const checkTime = new Date();
+        document.getElementById("response").innerText =
+          "Fetching Response ... " +
+          "Time Elapsed: " +
+          Math.round((checkTime.getTime() - startTime.getTime()) / 1000) +
+          "s";
+      } else {
+        const messages = await openai.beta.threads.messages.list(thread.id);
+        document.getElementById("response").innerText = (
+          messages.data[0].content[0] as MessageContentText
+        ).text.value;
+        let endTime = new Date();
+        document.getElementById("response").innerText +=
+          "\n \n Time Elapsed: " +
+          Math.round((endTime.getTime() - startTime.getTime()) / 1000) +
+          "s";
+        console.log(messages.data);
+      }
+    }, 4000);
   }
-  const messages = await openai.beta.threads.messages.list(thread.id);
-  document.getElementById("response").innerText = (
-    messages.data[0].content[0] as MessageContentText
-  ).text.value;
-  console.log(messages.data);
+  myLoop();
 }
 /**
  * This function is called when there is a valid api key.
