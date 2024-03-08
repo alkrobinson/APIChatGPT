@@ -1,6 +1,7 @@
 import { MessageContentText } from "openai/resources/beta/threads/messages/messages";
 import "./index.scss";
 import OpenAI from "openai";
+import { Marked } from "marked";
 /**
  * Global variables so  that multiple functions can access them.
  */
@@ -33,19 +34,22 @@ async function useAssistant(prompt: string) {
         runStatus = await openai.beta.threads.runs.retrieve(thread.id, run.id);
         myLoop();
         const checkTime = new Date();
-        document.getElementById("response").innerText =
+        document.getElementById("response2").innerText =
           "Fetching Response ... " +
           "Time Elapsed: " +
           Math.round((checkTime.getTime() - startTime.getTime()) / 1000) +
           "s";
       } else {
         const messages = await openai.beta.threads.messages.list(thread.id);
-        document.getElementById("response").innerText = (
-          messages.data[0].content[0] as MessageContentText
-        ).text.value;
+        const converter = new Marked();
+        const markdownToHtml = await converter.parse(
+          (messages.data[0].content[0] as MessageContentText).text.value
+        );
+        (document.getElementById("response") as HTMLTextAreaElement).value = markdownToHtml;
+        (document.getElementById("response2") as HTMLDivElement).innerHTML = (document.getElementById("response") as HTMLTextAreaElement).value;
         let endTime = new Date();
-        document.getElementById("response").innerText +=
-          "\n \n Time Elapsed: " +
+        document.getElementById("response2").innerHTML +=
+          "<br> Time Elapsed: " +
           Math.round((endTime.getTime() - startTime.getTime()) / 1000) +
           "s";
         console.log(messages.data);
@@ -131,7 +135,7 @@ document
     event.preventDefault();
     const prompt = (document.getElementById("prompt") as HTMLTextAreaElement)
       .value;
-    document.getElementById("response").innerText = "Fetching Response ...";
+    document.getElementById("response2").innerText = "Fetching Response ...";
     if (assistantChosen !== "") {
       useAssistant(prompt);
     } else {
@@ -161,7 +165,9 @@ async function startCompletions(prompt: string) {
     frequency_penalty: 0,
     presence_penalty: 0,
   });
-
-  document.getElementById("response").innerText =
-    response.choices[0].message.content;
+  const converter = new Marked();
+  const markdownToHtml = await converter.parse(
+    response.choices[0].message.content
+  );
+  document.getElementById("response2").innerHTML = markdownToHtml;
 }
