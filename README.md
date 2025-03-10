@@ -1,3 +1,3 @@
 # APIChatGPT
 
-test
+tests
